@@ -243,6 +243,13 @@
          </spacer>
         </item>
         <item>
+         <widget class="QCheckBox" name="checkBox_windowRaw">
+          <property name="text">
+           <string>Window averaged raw data</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButton_average">
           <property name="text">
            <string>Average</string>

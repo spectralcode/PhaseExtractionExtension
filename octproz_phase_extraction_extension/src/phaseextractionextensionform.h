@@ -31,6 +31,7 @@
 #define START_WITH_FIRST_BUFFER "start_with_first_buffer"
 #define BUFFERS_TO_FETCH "buffer_to_fetch"
 #define SELECT_ALL_ASCANS "select_all_ascans"
+#define WINDOW_RAW "window_raw_data"
 #define FIRST_ASCAN "first_ascan"
 #define LAST_ASCAN "last_ascan"
 #define PEAK_START "peak_start"
@@ -53,6 +54,7 @@ struct PhaseExtractionExtensionParameters {
 	bool startWithFirstBuffer;
 	int buffersToFetch;
 	bool useAllAscans;
+	bool windowRaw;
 	int firstLine;
 	int lastLine;
 	int startPos;
@@ -108,7 +110,7 @@ signals:
 	void paramsChanged(PhaseExtractionExtensionParameters params);
 	void fetchingEnabled(bool enable);
 	void buffersToFetchChanged(int numberOfBuffers);
-	void startAveraging(int firstLine, int lastLine);
+	void startAveraging(int firstLine, int lastLine, bool windowRaw);
 	void startAnalyzing(int startPos, int endPos);
 	void transferCoeffs();
 	void error(QString);

@@ -77,6 +77,7 @@ void PhaseExtractionExtensionForm::setSettings(QVariantMap settings) {
 	this->ui->checkBox_firstBuffer->setChecked(settings.value(START_WITH_FIRST_BUFFER).toBool());
 	this->ui->spinBox_buffersToFetch->setValue(settings.value(BUFFERS_TO_FETCH).toInt());
 	this->ui->radioButton_all->setChecked(settings.value(SELECT_ALL_ASCANS).toBool());
+	this->ui->checkBox_windowRaw->setChecked(settings.value(WINDOW_RAW).toBool());
 	this->ui->spinBox_startAscanAveraging->setValue(settings.value(FIRST_ASCAN).toInt());
 	this->ui->spinBox_endAscanAveraging->setValue(settings.value(LAST_ASCAN).toInt());
 	this->ui->spinBox_startAscanPeak->setValue(settings.value(PEAK_START).toInt());
@@ -87,6 +88,7 @@ void PhaseExtractionExtensionForm::getSettings(QVariantMap* settings) {
 	settings->insert(START_WITH_FIRST_BUFFER, this->parameters.startWithFirstBuffer);
 	settings->insert(BUFFERS_TO_FETCH, this->parameters.buffersToFetch);
 	settings->insert(SELECT_ALL_ASCANS, this->parameters.useAllAscans);
+	settings->insert(WINDOW_RAW, this->parameters.windowRaw);
 	settings->insert(FIRST_ASCAN, this->parameters.firstLine);
 	settings->insert(LAST_ASCAN, this->parameters.lastLine);
 	settings->insert(PEAK_START, this->parameters.startPos);
@@ -97,6 +99,7 @@ void PhaseExtractionExtensionForm::updateParams() {
 	this->parameters.startWithFirstBuffer = this->ui->checkBox_firstBuffer->isChecked();
 	this->parameters.buffersToFetch = this->ui->spinBox_buffersToFetch->value();
 	this->parameters.useAllAscans = this->ui->radioButton_all->isChecked();
+	this->parameters.windowRaw = this->ui->checkBox_windowRaw->isChecked();
 	this->parameters.firstLine = this->ui->spinBox_startAscanAveraging->value();
 	this->parameters.lastLine = this->ui->spinBox_endAscanAveraging->value();
 	this->parameters.startPos = this->ui->spinBox_startAscanPeak->value();
@@ -125,7 +128,8 @@ void PhaseExtractionExtensionForm::average(){
 		firstLine = -1;
 		lastLine = -1;
 	}
-	emit startAveraging(firstLine, lastLine);
+	bool windowRaw = this->ui->checkBox_windowRaw->isChecked();
+	emit startAveraging(firstLine, lastLine, windowRaw);
 }
 
 void PhaseExtractionExtensionForm::analyze() {

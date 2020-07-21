@@ -69,10 +69,11 @@ private:
 	void calculateResamplingCurve();
 	void fitResamplingCurve();
 	void windowAndIFFT(int startPos, int endPos);
+	QVector<qreal> getHanningWindow(int size);
 
 public slots:
 	void setData(unsigned char* data, size_t size, size_t bytesPerSample, int samplesPerLine);
-	void averageAndFFT(int firstLine, int lastLine);
+	void averageAndFFT(int firstLine, int lastLine, bool windowRaw);
 	void analyze(int startPos, int endPos);
 
 signals:

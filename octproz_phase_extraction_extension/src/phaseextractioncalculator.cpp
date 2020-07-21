@@ -222,7 +222,7 @@ void PhaseExtractionCalculator::setData(unsigned char* data, size_t size, size_t
 	this->polynomialFit->setSize(this->samplesPerLine);
 }
 
-void PhaseExtractionCalculator::averageAndFFT(int firstLine, int lastLine) {
+void PhaseExtractionCalculator::averageAndFFT(int firstLine, int lastLine, bool windowRaw) {
 	//check how many lines should be used for averaging
 	int numberOfLines = 0;
 	if(firstLine == -1 && lastLine == -1){
@@ -253,6 +253,14 @@ void PhaseExtractionCalculator::averageAndFFT(int firstLine, int lastLine) {
 	for(int j = 0; j < this->samplesPerLine; j++){
 		//this->rawSignal[j][REAL] /= (static_cast<double>(numberOfLines)*16); //todo: make bitshift optional (multiplication by 16) also add unpacking option to restore packed 12bit raw data
 		this->rawSignal[j][REAL] /= (static_cast<double>(numberOfLines));
+	}
+
+	//window averaged raw data
+	if(windowRaw){
+		QVector<qreal> window = this->getHanningWindow(this->samplesPerLine);
+		for(int j = 0; j < this->samplesPerLine; j++){
+			this->rawSignal[j][REAL] *= window.at(j);
+		}
 	}
 
 	//prepare data for plot of real part of averaged raw data
@@ -337,4 +345,29 @@ void PhaseExtractionCalculator::windowAndIFFT(int startPos, int endPos) {
 
 	//cleanup
 	fftw_destroy_plan(plan);
+}
+
+QVector<qreal> PhaseExtractionCalculator::getHanningWindow(int size) {
+	QVector<qreal> window;
+	window.resize(size);
+	int width = size;
+	int center = static_cast<int>(width/2);
+	int minPos = center - width/2;
+	int maxPos = minPos + width;
+	if (maxPos < minPos) {
+		int tmp = minPos;
+		minPos = maxPos;
+		maxPos = tmp;
+	}
+	for (int i = 0; i<width; i++) {
+		int xi = i - minPos;
+		qreal xiNorm = (static_cast<qreal>(xi) / (static_cast<qreal>(width) - 1.0));
+		if (xiNorm > 0.999 || xiNorm < 0.0001) {
+			window[i] = 0.0;
+		}
+		else {
+			window[i] = (0.5) * (1 - cos(2.0 * M_PI * (xiNorm)));
+		}
+	}
+	return window;
 }
