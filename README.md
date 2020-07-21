@@ -19,6 +19,7 @@ Dependencies
 ----------
 - [FFTW](http://www.fftw.org/)
 - [Eigen](http://eigen.tuxfamily.org/)
+- [QCustomPlot](https://www.qcustomplot.com/)
 
 License
 ----------
