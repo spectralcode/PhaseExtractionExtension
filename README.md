@@ -3,7 +3,7 @@
 Phase Extraction Extension is a plugin for [OCTproZ](https://github.com/spectralcode/OCTproZ). It can be used to determine a suitable resampling curve for k-linearization. 
 
 <p align="center">
-  <img src="images/phaseextractionextension_ubuntu_screenshot.png" width="640">
+  <img src="images/phase_extractionextension_ubuntu_screenshot.png" width="640">
 </p>
 
 
