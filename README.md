@@ -23,17 +23,17 @@ A detailed explanation can be found in the [publication](https://www.osapublishi
 
 How to use
 ----------
-(coming soon...)
+Watch [this video!](https://www.youtube.com/watch?v=nlBWCv9TDJ8)
 
 
 Download and installation
 ----------
-(coming soon...)
+Download the zip archive from the [GitHub release section](https://github.com/spectralcode/PhaseExtractionExtension/releases) and extract it into the OCTproZ folder (_phaseextractionextension.dll_ should be placed in the _plugins_ folder and _libfftw3-3.dll_ should be in the same folder as _octproz.exe_).
 
 
 How to compile
 ----------
-(coming soon...)
+Watch [this video](https://www.youtube.com/watch?v=DHB3NX_P1vk) from minute 12:50.
 
 
 Dependencies
