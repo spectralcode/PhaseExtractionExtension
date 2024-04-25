@@ -2,7 +2,7 @@
 **  This file is part of PhaseExtractionExtension for OCTproZ.
 **  PhaseExtractionExtension is a plugin for OCTproZ that can be used
 **  to determine a suitable resampling curve for k-linearization.
-**  Copyright (C) 2020-2021 Miroslav Zabic
+**  Copyright (C) 2020-2024 Miroslav Zabic
 **
 **  PhaseExtractionExtension is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ** Author:	Miroslav Zabic
 ** Contact:	zabic
 **			at
-**			iqo.uni-hannover.de
+**			spectralcode.de
 ****
 **/
 
@@ -90,11 +90,13 @@ public slots:
 	void plotAnalyticalSignal(QVector<qreal> dataReal, QVector<qreal> dataImag);
 	void plotUnwrappedPhase(QVector<qreal> data);
 	void plotResamplingCurve(QVector<qreal> data);
+	void plotNonLinearPhase(QVector<qreal> data);
 	void plotFittedResamplingCurve(float* data, int size);
 	void plotRaw(QVector<qreal> data);
 	void setCoeffs(double k0, double k1, double k2, double k3);
 	void saveResamplingCurve();
 	void enableAveragingGroupBox();
+
 
 private:
 	void findGuiElements();

@@ -2,7 +2,7 @@
 **  This file is part of PhaseExtractionExtension for OCTproZ.
 **  PhaseExtractionExtension is a plugin for OCTproZ that can be used
 **  to determine a suitable resampling curve for k-linearization.
-**  Copyright (C) 2020-2021 Miroslav Zabic
+**  Copyright (C) 2020-2024 Miroslav Zabic
 **
 **  PhaseExtractionExtension is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ** Author:	Miroslav Zabic
 ** Contact:	zabic
 **			at
-**			iqo.uni-hannover.de
+**			spectralcode.de
 ****
 **/
 
@@ -78,6 +78,7 @@ PhaseExtractionExtension::PhaseExtractionExtension() : Extension() {
 	connect(this->calculator, &PhaseExtractionCalculator::phaseCalculated, this->form, &PhaseExtractionExtensionForm::plotPhase);
 	connect(this->calculator, &PhaseExtractionCalculator::analyticalSignalCalculated, this->form, &PhaseExtractionExtensionForm::plotAnalyticalSignal);
 	connect(this->calculator, &PhaseExtractionCalculator::unwrappedPhaseCalculated, this->form, &PhaseExtractionExtensionForm::plotUnwrappedPhase);
+		connect(this->calculator, &PhaseExtractionCalculator::nonLinearPhaseCalculated, this->form, &PhaseExtractionExtensionForm::plotNonLinearPhase);
 	connect(this->calculator, &PhaseExtractionCalculator::signalSelected, this->form, &PhaseExtractionExtensionForm::plotSelectedSignal);
 	connect(this->calculator, &PhaseExtractionCalculator::resamplingCurveCalculated, this->form, &PhaseExtractionExtensionForm::plotResamplingCurve);
 	connect(this->calculator, &PhaseExtractionCalculator::rawAveraged, this->form, &PhaseExtractionExtensionForm::plotRaw);

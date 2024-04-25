@@ -2,7 +2,7 @@
 **  This file is part of PhaseExtractionExtension for OCTproZ.
 **  PhaseExtractionExtension is a plugin for OCTproZ that can be used
 **  to determine a suitable resampling curve for k-linearization.
-**  Copyright (C) 2020-2021 Miroslav Zabic
+**  Copyright (C) 2020-2022 Miroslav Zabic
 **
 **  PhaseExtractionExtension is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ** Author:	Miroslav Zabic
 ** Contact:	zabic
 **			at
-**			iqo.uni-hannover.de
+**			spectralcode.de
 ****
 **/
 
@@ -55,7 +55,7 @@ private:
 	fftw_complex* rawSignal;
 	fftw_complex* selectedSignal;
 	QVector<qreal> phase;
-	QVector<qreal> unwrappedPhase;
+	QVector<qreal> nonLinearPhase;
 	QVector<qreal> coeffs;
 	QVector<qreal> fittedResamplingCurve;
 	QVector<qreal> rawResamplingCurve;
@@ -67,6 +67,8 @@ private:
 	void copyLine(fftw_complex* dest, int line);
 	void calculatePhase();
 	void unwrapPhase();
+	void generateLinearePhaseLine();
+	void generateNonLinearPhaseLine();
 	void calculateResamplingCurve();
 	void fitResamplingCurve();
 	void windowAndIFFT(int startPos, int endPos, bool windowPeak);
@@ -84,6 +86,7 @@ signals:
 	void signalSelected(QVector<qreal> data);
 	void unwrappedPhaseCalculated(QVector<qreal> phase);
 	void phaseCalculated(QVector<qreal> phase);
+	void nonLinearPhaseCalculated(QVector<qreal> nonLinearPhase);
 	void analyticalSignalCalculated(QVector<qreal> signalReal, QVector<qreal> signalImag);
 	void resamplingCurveCalculated(QVector<qreal> data);
 	void resamplingCurveFitted(float* data, int size);

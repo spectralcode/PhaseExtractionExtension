@@ -709,7 +709,7 @@
         <item>
          <widget class="QLabel" name="label_13">
           <property name="text">
-           <string>Unwrapped Phase:</string>
+           <string>Nonlinear part of unwrapped phase:</string>
           </property>
          </widget>
         </item>

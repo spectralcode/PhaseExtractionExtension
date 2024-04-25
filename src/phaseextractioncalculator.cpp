@@ -2,7 +2,7 @@
 **  This file is part of PhaseExtractionExtension for OCTproZ.
 **  PhaseExtractionExtension is a plugin for OCTproZ that can be used
 **  to determine a suitable resampling curve for k-linearization.
-**  Copyright (C) 2020-2021 Miroslav Zabic
+**  Copyright (C) 2020-2024 Miroslav Zabic
 **
 **  PhaseExtractionExtension is free software: you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ** Author:	Miroslav Zabic
 ** Contact:	zabic
 **			at
-**			iqo.uni-hannover.de
+**			spectralcode.de
 ****
 **/
 
@@ -174,18 +174,33 @@ void PhaseExtractionCalculator::unwrapPhase() {
 				this->phase[j] = this->phase.at(j) + 2.0*M_PI;
 		}
 	}
-	emit unwrappedPhaseCalculated(this->phase);
+	//emit unwrappedPhaseCalculated(this->phase);
+}
+
+void PhaseExtractionCalculator::generateLinearePhaseLine() {
+	int size = this->phase.size();
+	this->connectionLine.resize(size);
+	//generate line that connects start end end point of resampled phase. This correspons to the phase of a perfectly linear sine wave
+	for(int i=0; i<size; i++){
+		this->connectionLine[i] = ((this->phase.last() - this->phase.first()) / (size-1)) * i + this->phase.first();
+	}
+}
+
+void PhaseExtractionCalculator::generateNonLinearPhaseLine() {
+	int size = this->phase.size();
+	this->nonLinearPhase.resize(size);
+	this->nonLinearPhase.fill(0);
+
+	for(int i = 0; i< size; i++){
+		this->nonLinearPhase[i] = this->phase.at(i) - this->connectionLine.at(i);
+	}
+	emit nonLinearPhaseCalculated((this->nonLinearPhase));
 }
 
 void PhaseExtractionCalculator::calculateResamplingCurve() {
 	int size = this->phase.size();
 	this->rawResamplingCurve.resize(size);
-	this->connectionLine.resize(size);
 
-	//generate line that connects start end end point of resampled phase. This connection line will be used to calculate the resampling curve
-	for(int i=0; i<size; i++){
-		this->connectionLine[i] = ((this->phase.last() - this->phase.first()) / (size-1)) * i + this->phase.first();
-	}
 
 	//calculate resampling curve
 	this->rawResamplingCurve[0] = 0.0;
@@ -262,8 +277,8 @@ void PhaseExtractionCalculator::setData(unsigned char* data, size_t size, size_t
 
 	this->phase.resize(this->samplesPerLine);
 	this->phase.fill(0);
-	this->unwrappedPhase.resize(this->samplesPerLine);
-	this->unwrappedPhase.fill(0);
+	this->nonLinearPhase.resize(this->samplesPerLine);
+	this->nonLinearPhase.fill(0);
 	this->polynomialFit->setSize(this->samplesPerLine);
 }
 
@@ -367,6 +382,8 @@ void PhaseExtractionCalculator::analyze(int startPos, int endPos, bool windowPea
 	this->windowAndIFFT(startPos, endPos, windowPeak);
 	this->calculatePhase();
 	this->unwrapPhase();
+	this->generateLinearePhaseLine();
+	this->generateNonLinearPhaseLine();
 	this->calculateResamplingCurve();
 	this->fitResamplingCurve();
 }
