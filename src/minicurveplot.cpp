@@ -350,7 +350,11 @@ bool MiniCurvePlot::saveCurveDataToFile(QString fileName) {
 		QTextStream stream(&file);
 		stream << "Sample Number" << ";" << "Sample Value" << "\n";
 		for(int i = 0; i < this->sampleNumbers.size(); i++){
-			stream << QString::number(this->sampleNumbers.at(i)) << ";" << QString::number(this->curve.at(i)) << "\n";
+			if(this->curve.size() > 0 && this->sampleNumbers.size() > 0) {
+				stream << QString::number(this->sampleNumbers.at(i)) << ";" << QString::number(this->curve.at(i)) << "\n";
+			} else if(this->referenceCurve.size() > 0 && this->sampleNumbers.size() > 0) {
+				stream << QString::number(this->sampleNumbers.at(i)) << ";" << QString::number(this->referenceCurve.at(i)) << "\n";
+			}
 		}
 	file.close();
 	saved = true;
