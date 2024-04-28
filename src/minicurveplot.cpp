@@ -240,7 +240,7 @@ void MiniCurvePlot::zoomOutSlightly() {
 
 
 void MiniCurvePlot::contextMenuEvent(QContextMenuEvent *event) {
-#if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) || defined(__aarch64__)
 	QMenu menu(this);
 	QAction savePlotAction(tr("Save Plot as..."), this);
 	connect(&savePlotAction, &QAction::triggered, this, &MiniCurvePlot::slot_saveToDisk);
