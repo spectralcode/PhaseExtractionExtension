@@ -73,12 +73,14 @@ PhaseExtractionExtension::PhaseExtractionExtension() : Extension() {
 	connect(this->form, &PhaseExtractionExtensionForm::info, this, &PhaseExtractionExtension::info);
 	connect(this->form, &PhaseExtractionExtensionForm::startAveraging, this->calculator, &PhaseExtractionCalculator::averageAndFFT);
 	connect(this->form, &PhaseExtractionExtensionForm::startAnalyzing, this->calculator, &PhaseExtractionCalculator::analyze);
+	connect(this->form, &PhaseExtractionExtensionForm::startFit, this->calculator, &PhaseExtractionCalculator::reFitResamplingCurve);
+	connect(this->form, &PhaseExtractionExtensionForm::fitParamsChanged, this->calculator, &PhaseExtractionCalculator::setFitParams);
 	connect(this->calculator, &PhaseExtractionCalculator::info, this->form, &PhaseExtractionExtensionForm::setFetchingStatusMessage);
 	connect(this->calculator, &PhaseExtractionCalculator::fftDataAveraged, this->form, &PhaseExtractionExtensionForm::plotAveragedData);
 	connect(this->calculator, &PhaseExtractionCalculator::phaseCalculated, this->form, &PhaseExtractionExtensionForm::plotPhase);
 	connect(this->calculator, &PhaseExtractionCalculator::analyticalSignalCalculated, this->form, &PhaseExtractionExtensionForm::plotAnalyticalSignal);
 	connect(this->calculator, &PhaseExtractionCalculator::unwrappedPhaseCalculated, this->form, &PhaseExtractionExtensionForm::plotUnwrappedPhase);
-		connect(this->calculator, &PhaseExtractionCalculator::nonLinearPhaseCalculated, this->form, &PhaseExtractionExtensionForm::plotNonLinearPhase);
+	connect(this->calculator, &PhaseExtractionCalculator::nonLinearPhaseCalculated, this->form, &PhaseExtractionExtensionForm::plotNonLinearPhase);
 	connect(this->calculator, &PhaseExtractionCalculator::signalSelected, this->form, &PhaseExtractionExtensionForm::plotSelectedSignal);
 	connect(this->calculator, &PhaseExtractionCalculator::resamplingCurveCalculated, this->form, &PhaseExtractionExtensionForm::plotResamplingCurve);
 	connect(this->calculator, &PhaseExtractionCalculator::rawAveraged, this->form, &PhaseExtractionExtensionForm::plotRaw);

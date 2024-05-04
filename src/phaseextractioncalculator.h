@@ -62,6 +62,8 @@ private:
 	QVector<qreal> connectionLine;
 	Polynomial* polynomialFit;
 	QVector<qreal> backgroundSignal;
+	int ignoreStart;
+	int ignoreEnd;
 
 	void copyLine(double* dest, int line);
 	void copyLine(fftw_complex* dest, int line);
@@ -79,6 +81,8 @@ public slots:
 	void averageAndFFT(int firstLine, int lastLine, bool windowRaw, bool useBackground);
 	void analyze(int startPos, int endPos, bool windowPeak);
 	void getBackgroundSignal(unsigned char* data, size_t size, size_t bytesPerSample, int samplesPerLine);
+	void setFitParams(int ignoreStart, int ignoreEnd);
+	void reFitResamplingCurve(int ignoreStart, int ignoreEnd);
 
 signals:
 	void fftDataAveraged(QVector<qreal> data);

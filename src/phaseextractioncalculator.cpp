@@ -40,6 +40,8 @@ PhaseExtractionCalculator::PhaseExtractionCalculator(QObject *parent) : QObject(
 	this->rawSignal = nullptr;
 	this->selectedSignal = nullptr;
 	this->polynomialFit = new Polynomial();
+	this->ignoreStart = 0;
+	this->ignoreEnd = 0;
 }
 
 PhaseExtractionCalculator::~PhaseExtractionCalculator()
@@ -96,6 +98,16 @@ void PhaseExtractionCalculator::getBackgroundSignal(unsigned char *data, size_t 
 		}
 	}
 	emit info(tr("Background done!"));
+}
+
+void PhaseExtractionCalculator::setFitParams(int ignoreStart, int ignoreEnd) {
+	this->ignoreStart = ignoreStart;
+	this->ignoreEnd = ignoreEnd;
+}
+
+void PhaseExtractionCalculator::reFitResamplingCurve(int ignoreStart, int ignoreEnd) {
+	this->setFitParams(ignoreStart, ignoreEnd);
+	this->fitResamplingCurve();
 }
 
 void PhaseExtractionCalculator::copyLine(double *dest, int line) { //todo: refactor this method to avoid duplicate code
@@ -218,38 +230,53 @@ void PhaseExtractionCalculator::calculateResamplingCurve() {
 
 void PhaseExtractionCalculator::fitResamplingCurve() {
 	int size = this->rawResamplingCurve.size();
+
+	//ensure that ignored values are within size range of resampling curve
+	this->ignoreStart = qBound(0, this->ignoreStart, size);
+	this->ignoreEnd = qBound(0, this->ignoreEnd, size);
+
+
+	//check if if there are still values left after ignoring the start end end samples
+	int effectiveSize = this->rawResamplingCurve.size() - this->ignoreStart - this->ignoreEnd;
+	if (effectiveSize <= 0) {
+		emit error(tr("PhaseExtractionExtension: no samples available for fit."));
+		return;
+	}
+
+
 	int order = 3;
-	this->coeffs.resize(order+1);
+	this->coeffs.resize(order + 1);
 
 	//prepare least squares fit
-	Eigen::MatrixXd A(size, order+1);
-	Eigen::VectorXd yv_mapped = Eigen::VectorXd::Map(&this->rawResamplingCurve.first(), size);
+	Eigen::MatrixXd A(effectiveSize, order + 1);
+	Eigen::VectorXd yv_mapped = Eigen::VectorXd::Map(&this->rawResamplingCurve[this->ignoreStart], effectiveSize);
 	Eigen::VectorXd result;
+
 	//create matrix
 	QVector<qreal> xValues;
-	xValues.resize(size);
-	for(int i = 0; i<size; i++){
-		xValues[i] = i;
+	xValues.resize(effectiveSize);
+	for (int i = 0; i < effectiveSize; i++) {
+		xValues[i] = i + this->ignoreStart;
 	}
-	for (int i = 0; i < size; i++){
-		for (int j = 0; j < order+1; j++){
-			A(i, j) = pow(xValues.at(i), j);
+	for (int i = 0; i < effectiveSize; i++) {
+		for (int j = 0; j < order + 1; j++) {
+			A(i, j) = std::pow(xValues.at(i), j); // Use std::pow for clarity
 		}
 	}
 
 	//solve for linear least squares fit
 	result = A.householderQr().solve(yv_mapped);
 
-	//copy coeffs and emit them with OCTproZ scaling factors to gui
-	this->coeffs.resize(order+1);
-	for (size_t i = 0; i < order+1; i++){
+	//copy coeffs and emit them with OCTproZ scaling factors to GUI
+	this->coeffs.resize(order + 1);
+	for (size_t i = 0; i < order + 1; i++) {
 		coeffs[i] = result[i];
 	}
-	size = size-1;
+	size = size -1;
 	emit coeffsCalculated(this->coeffs.at(0), this->coeffs.at(1)*size, this->coeffs.at(2)*size*size, this->coeffs.at(3)*size*size*size);
 
 	//fit resampling curve and emit fit to plot
-	for(int i = 0; i < order+1; i++){
+	for (int i = 0; i < order + 1; i++) {
 		this->polynomialFit->setCoeff(this->coeffs.at(i), i);
 	}
 	emit resamplingCurveFitted(this->polynomialFit->getData(), this->polynomialFit->getSize());

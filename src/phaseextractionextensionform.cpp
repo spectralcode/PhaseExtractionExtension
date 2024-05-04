@@ -45,6 +45,8 @@ PhaseExtractionExtensionForm::PhaseExtractionExtensionForm(QWidget *parent) :
 	connect(this->ui->pushButton_analyze, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::analyze);
 	connect(this->ui->pushButton_transferCoeffs, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::transferCoeffs);
 	connect(this->ui->pushButton_saveRawResamplingCurve, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::saveResamplingCurve);
+	connect(this->ui->pushButton_fit, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::fit);
+
 
 	//init group boxes
 	this->ui->groupBox_2->setDisabled(true);
@@ -66,6 +68,17 @@ PhaseExtractionExtensionForm::PhaseExtractionExtensionForm(QWidget *parent) :
 	this->ui->widget_resultPlot->setCurveName("Raw Resampling Curve");
 	this->ui->widget_resultPlot->setReferenceCurveName("Fitted Resampling Curve");
 
+
+	//fit ignore values
+	connect(this->ui->spinBox_ignoreStart, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this]() {
+		emit fitParamsChanged(this->ui->spinBox_ignoreStart->value(), this->ui->spinBox_ignoreEnd->value());
+	});
+
+	// Connect the ignoreEnd spinbox value change to emit fitParamsChanged
+	connect(this->ui->spinBox_ignoreEnd, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, [this]() {
+		emit fitParamsChanged(this->ui->spinBox_ignoreStart->value(), this->ui->spinBox_ignoreEnd->value());
+	});
+
 	//default values
 	this->ui->radioButton_select->setChecked(true);
 }
@@ -84,6 +97,8 @@ void PhaseExtractionExtensionForm::setSettings(QVariantMap settings) {
 	this->ui->spinBox_endAscanAveraging->setValue(settings.value(LAST_ASCAN).toInt());
 	this->ui->spinBox_startAscanPeak->setValue(settings.value(PEAK_START).toInt());
 	this->ui->spinBox_endAscanPeak->setValue(settings.value(PEAK_END).toInt());
+	this->ui->spinBox_ignoreStart->setValue(settings.value(IGNORE_START).toInt());
+	this->ui->spinBox_ignoreEnd->setValue(settings.value(IGNORE_END).toInt());
 }
 
 void PhaseExtractionExtensionForm::getSettings(QVariantMap* settings) {
@@ -95,6 +110,8 @@ void PhaseExtractionExtensionForm::getSettings(QVariantMap* settings) {
 	settings->insert(LAST_ASCAN, this->parameters.lastLine);
 	settings->insert(PEAK_START, this->parameters.startPos);
 	settings->insert(PEAK_END, this->parameters.endPos);
+	settings->insert(IGNORE_START, this->parameters.ignoreStart);
+	settings->insert(IGNORE_END, this->parameters.ignoreEnd);
 }
 
 void PhaseExtractionExtensionForm::updateParams() {
@@ -106,6 +123,8 @@ void PhaseExtractionExtensionForm::updateParams() {
 	this->parameters.lastLine = this->ui->spinBox_endAscanAveraging->value();
 	this->parameters.startPos = this->ui->spinBox_startAscanPeak->value();
 	this->parameters.endPos = this->ui->spinBox_endAscanPeak->value();
+	this->parameters.ignoreStart = this->ui->spinBox_ignoreStart->value();
+	this->parameters.ignoreEnd = this->ui->spinBox_ignoreEnd->value();
 	emit paramsChanged(this->parameters);
 }
 
@@ -149,6 +168,12 @@ void PhaseExtractionExtensionForm::analyze() {
 	int endPos = qAbs(qMax(this->ui->spinBox_startAscanPeak->value(), this->ui->spinBox_endAscanPeak->value()));
 	bool windowPeak = this->ui->checkBox_windowSelectedPeak->isChecked();
 	emit startAnalyzing(startPos, endPos, windowPeak);
+}
+
+void PhaseExtractionExtensionForm::fit() {
+	int ignoreStart = qMax(0, this->ui->spinBox_ignoreStart->value());
+	int ignoreEnd = qMax(0, this->ui->spinBox_ignoreEnd->value());
+	emit startFit(ignoreStart, ignoreEnd);
 }
 
 void PhaseExtractionExtensionForm::plotAveragedData(QVector<qreal> data) {

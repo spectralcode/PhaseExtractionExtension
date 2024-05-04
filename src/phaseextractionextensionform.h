@@ -36,6 +36,8 @@
 #define LAST_ASCAN "last_ascan"
 #define PEAK_START "peak_start"
 #define PEAK_END "peak_end"
+#define IGNORE_START "ignore_start"
+#define IGNORE_END "ignore_end"
 
 #include <QWidget>
 #include <QCheckBox>
@@ -59,6 +61,8 @@ struct PhaseExtractionExtensionParameters {
 	int lastLine;
 	int startPos;
 	int endPos;
+	int ignoreStart;
+	int ignoreEnd;
 };
 
 class PhaseExtractionExtensionForm : public QWidget
@@ -83,6 +87,7 @@ public slots:
 	void cancelFetching();
 	void average();
 	void analyze();
+	void fit();
 	void plotAveragedData(QVector<qreal> data);
 	void scaleYAxsisOfAscanPlot(qreal min, qreal max);
 	void plotPhase(QVector<qreal> phase);
@@ -117,6 +122,8 @@ signals:
 	void buffersToFetchChanged(int numberOfBuffers);
 	void startAveraging(int firstLine, int lastLine, bool windowRaw, bool useBackground);
 	void startAnalyzing(int startPos, int endPos, bool windowPeak);
+	void startFit(int startIgnore, int endIgnore);
+	void fitParamsChanged(int startIgnore, int endIgnore);
 	void transferCoeffs();
 	void error(QString);
 	void info(QString);
