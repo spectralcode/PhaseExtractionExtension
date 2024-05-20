@@ -260,7 +260,7 @@ void PhaseExtractionCalculator::fitResamplingCurve() {
 	}
 	for (int i = 0; i < effectiveSize; i++) {
 		for (int j = 0; j < order + 1; j++) {
-			A(i, j) = std::pow(xValues.at(i), j); // Use std::pow for clarity
+			A(i, j) = qPow(xValues.at(i), j);
 		}
 	}
 
