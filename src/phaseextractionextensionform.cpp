@@ -44,6 +44,7 @@ PhaseExtractionExtensionForm::PhaseExtractionExtensionForm(QWidget *parent) :
 	connect(this->ui->pushButton_average, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::average);
 	connect(this->ui->pushButton_analyze, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::analyze);
 	connect(this->ui->pushButton_transferCoeffs, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::transferCoeffs);
+	connect(this->ui->pushButton_transferCurve, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::transferCurve);
 	connect(this->ui->pushButton_saveRawResamplingCurve, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::saveResamplingCurve);
 	connect(this->ui->pushButton_fit, &QPushButton::clicked, this, &PhaseExtractionExtensionForm::fit);
 

@@ -45,6 +45,7 @@ PhaseExtractionExtension::PhaseExtractionExtension() : Extension() {
 	connect(this->form, &PhaseExtractionExtensionForm::fetchingBackgroundEnabled, this,&PhaseExtractionExtension::enableFetchingBackground);
 	connect(this->form, &PhaseExtractionExtensionForm::buffersToFetchChanged, this, &PhaseExtractionExtension::setBuffersToFetch);
 	connect(this->form, &PhaseExtractionExtensionForm::transferCoeffs, this, &PhaseExtractionExtension::transferCoeffsToOCTproZ);
+	connect(this->form, &PhaseExtractionExtensionForm::transferCurve, this, &PhaseExtractionExtension::transferCurveToOCTproZ);
 
 	connect(this->form, &PhaseExtractionExtensionForm::paramsChanged, this, &PhaseExtractionExtension::setParams);
 
@@ -183,6 +184,20 @@ void PhaseExtractionExtension::setCoeffs(double k0, double k1, double k2, double
 
 void PhaseExtractionExtension::transferCoeffsToOCTproZ() {
 	emit setKLinCoeffsRequest(&this->k0, &this->k1, &this->k2, &this->k3);
+}
+
+void PhaseExtractionExtension::transferCurveToOCTproZ()
+{
+	QVector<float> resamplingCurveFloat;
+	QVector<qreal> resamplingCurveQReal = this->calculator->getRawResamplingCurve();
+
+	resamplingCurveFloat.reserve(resamplingCurveQReal.size());
+
+	for (qreal value : resamplingCurveQReal) {
+		resamplingCurveFloat.append(static_cast<float>(value));
+	}
+
+	emit setCustomResamplingCurveRequest(resamplingCurveFloat);
 }
 
 void PhaseExtractionExtension::rawDataReceived(void* buffer, unsigned int bitDepth, unsigned int samplesPerLine, unsigned int linesPerFrame, unsigned int framesPerBuffer, unsigned int buffersPerVolume, unsigned int currentBufferNr) {

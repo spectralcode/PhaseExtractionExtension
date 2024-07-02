@@ -89,6 +89,7 @@ public slots:
 	void enableFetchingBackground(bool enable);
 	void setCoeffs(double k0, double k1, double k2, double k3);
 	void transferCoeffsToOCTproZ();
+	void transferCurveToOCTproZ();
 
 	virtual void rawDataReceived(void* buffer, unsigned int bitDepth, unsigned int samplesPerLine, unsigned int linesPerFrame, unsigned int framesPerBuffer, unsigned int buffersPerVolume, unsigned int currentBufferNr) override;
 	virtual void processedDataReceived(void* buffer, unsigned int bitDepth, unsigned int samplesPerLine, unsigned int linesPerFrame, unsigned int framesPerBuffer, unsigned int buffersPerVolume, unsigned int currentBufferNr) override;

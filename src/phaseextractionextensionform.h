@@ -125,6 +125,7 @@ signals:
 	void startFit(int startIgnore, int endIgnore);
 	void fitParamsChanged(int startIgnore, int endIgnore);
 	void transferCoeffs();
+	void transferCurve();
 	void error(QString);
 	void info(QString);
 

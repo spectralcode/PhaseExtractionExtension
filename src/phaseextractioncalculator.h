@@ -43,6 +43,8 @@ public:
 	explicit PhaseExtractionCalculator(QObject *parent = nullptr);
 	~PhaseExtractionCalculator();
 
+	QVector<qreal> getRawResamplingCurve(){return this->rawResamplingCurve;}
+
 private:
 	unsigned char* inputData;
 	int numberOfSamples;

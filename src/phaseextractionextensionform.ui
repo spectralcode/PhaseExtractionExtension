@@ -25,9 +25,12 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_11">
+  <layout class="QHBoxLayout" name="horizontalLayout_14">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_9">
+     <property name="spacing">
+      <number>3</number>
+     </property>
      <item>
       <widget class="QGroupBox" name="groupBox">
        <property name="minimumSize">
@@ -675,18 +678,29 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_transferCoeffs">
-          <property name="text">
-           <string>Transfer coefficients to OCTproZ</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="pushButton_saveRawResamplingCurve">
-          <property name="text">
-           <string>Save raw resampling curve</string>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_11">
+          <item>
+           <widget class="QPushButton" name="pushButton_transferCoeffs">
+            <property name="text">
+             <string>Transfer coeffs</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_transferCurve">
+            <property name="text">
+             <string>Transfer curve</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_saveRawResamplingCurve">
+            <property name="text">
+             <string>Save curve</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -699,6 +713,21 @@
       <string>Single steps of extraction process</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_10">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_7">
         <item>
