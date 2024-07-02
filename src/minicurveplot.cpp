@@ -92,6 +92,18 @@ MiniCurvePlot::MiniCurvePlot(QWidget *parent) : QCustomPlot(parent){
 	//init bools that are used to check if curve and referenceCurved have been used
 	this->curveUsed =false;
 	this->referenceCurveUsed = false;
+
+	//init min max display
+	this->displayMinMaxEnabled = false;
+	minLabel = new QCPItemText(this);
+	maxLabel = new QCPItemText(this);
+	minLabel->setPositionAlignment(Qt::AlignLeft | Qt::AlignTop);
+	maxLabel->setPositionAlignment(Qt::AlignRight | Qt::AlignTop);
+	minLabel->setColor(QColor(Qt::lightGray));
+	maxLabel->setColor(QColor(Qt::lightGray));
+	minLabel->setVisible(false);
+	maxLabel->setVisible(false);
+
 }
 
 MiniCurvePlot::~MiniCurvePlot() {
@@ -165,6 +177,7 @@ void MiniCurvePlot::plotCurves(double *curve, double *referenceCurve, unsigned i
 	 //update plot
 	 this->rescaleAxes();
 	 this->zoomOutSlightly();
+	 this->updateMinMaxLabels();
 	 this->replot();
 }
 
@@ -207,6 +220,7 @@ void MiniCurvePlot::plotCurves(float *curve, float *referenceCurve, unsigned int
 	 //update plot
 	 this->rescaleAxes();
 	 this->zoomOutSlightly();
+	 this->updateMinMaxLabels();
 	 this->replot();
 }
 
@@ -219,6 +233,13 @@ void MiniCurvePlot::clearPlot() {
 		this->plotCurves(nullptr, &dummyValue, 1);
 	}
 }
+
+void MiniCurvePlot::toggleDisplayMinMax() {
+	this->displayMinMaxEnabled = !this->displayMinMaxEnabled;
+	this->updateMinMaxLabels();
+	this->replot();
+}
+
 
 void MiniCurvePlot::setAxisColor(QColor color) {
 	this->xAxis->setBasePen(QPen(color, 1));
@@ -238,13 +259,43 @@ void MiniCurvePlot::zoomOutSlightly() {
 	this->xAxis->scaleRange(1.1, this->xAxis->range().center());
 }
 
+void MiniCurvePlot::updateMinMaxLabels() {
+	if (displayMinMaxEnabled) {
+		double min = *std::min_element(curve.begin(), curve.end());
+		double max = *std::max_element(curve.begin(), curve.end());
+
+		minLabel->setText(QString("Min: %1").arg(min));
+		maxLabel->setText(QString("Max: %1").arg(max));
+
+		minLabel->position->setCoords(xAxis->range().lower, yAxis->range().upper);
+		maxLabel->position->setCoords(xAxis->range().upper, yAxis->range().upper);
+
+		minLabel->setVisible(true);
+		maxLabel->setVisible(true);
+	} else {
+		minLabel->setVisible(false);
+		maxLabel->setVisible(false);
+	}
+}
+
+
 
 void MiniCurvePlot::contextMenuEvent(QContextMenuEvent *event) {
 #if defined(Q_OS_WIN) || defined(__aarch64__)
 	QMenu menu(this);
+
+	//min max display
+	QAction *toggleMinMaxAction = new QAction("Display Min/Max", this);
+	toggleMinMaxAction->setCheckable(true);
+	toggleMinMaxAction->setChecked(displayMinMaxEnabled);
+	connect(toggleMinMaxAction, &QAction::triggered, this, &MiniCurvePlot::toggleDisplayMinMax);
+	menu.addAction(toggleMinMaxAction);
+
+	//save plot
 	QAction savePlotAction(tr("Save Plot as..."), this);
 	connect(&savePlotAction, &QAction::triggered, this, &MiniCurvePlot::slot_saveToDisk);
 	menu.addAction(&savePlotAction);
+
 	menu.exec(event->globalPos());
 #elif defined(Q_OS_LINUX)
 	//opening a QFileDialog does not work under Linux if an OpenGL window is open at the same time. There is no way to close and reopen OpenGL windows in OCTproZ from Extensions currently. So for now context menu is disabled for Linux

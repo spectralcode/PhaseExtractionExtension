@@ -46,11 +46,13 @@ public:
 	void plotCurves(float* curve, float* referenceCurve, unsigned int samples);
 	void roundCorners(bool enable){this->drawRoundCorners = enable;}
 	void clearPlot();
+	void toggleDisplayMinMax();
 
 
 private:
 	void setAxisColor(QColor color);
 	void zoomOutSlightly();
+	void updateMinMaxLabels();
 
 	QVector<qreal> sampleNumbers;
 	QVector<qreal> curve;
@@ -66,6 +68,10 @@ private:
 	bool customRange;
 	bool curveUsed;
 	bool referenceCurveUsed;
+	QCPItemText *minLabel;
+	QCPItemText *maxLabel;
+	bool displayMinMaxEnabled;
+
 
 protected:
 	void contextMenuEvent(QContextMenuEvent* event) override;
